@@ -18,7 +18,7 @@ function Joiner:add_repo() {
     basedir=$4
     path=$PATH_MODULES/$basedir/$name
     
-    ([ -e $path/.git/ ] && git --git-dir=$path/.git/ rev-parse && git --git-dir=$path/.git/ pull origin $branch) || git clone $url/$name.git -b $branch $path 
+    ([ -e $path/.git/ ] && git --git-dir=$path/.git/ rev-parse && git --git-dir=$path/.git/ pull origin $branch) || git clone $url -c advice.detachedHead=0 -b $branch $path 
 	[ -f $path/install.sh ] && bash $path/install.sh $PARAMS
 }
 
