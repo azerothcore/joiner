@@ -12,7 +12,12 @@
 TRUE=0
 FALSE=1
 
+readlink(){ RScript -e "cat(normalizePath(commandArgs(T)[1]))" "$1";}
+
 J_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+source "$J_PATH/gnu-tools-for-mac.sh"
+
 J_PATH_MODULES=$(readlink -f $J_PATH"/../../")
 
 J_PARAMS="$@"
