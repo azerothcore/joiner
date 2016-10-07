@@ -8,8 +8,12 @@
 # DEFINES
 #
 
+# boolean bash convention ( inverse )
+TRUE=0
+FALSE=1
+
 J_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-J_PATH_MODULES=$(readlink -f $PATH_JOINER"/../../")
+J_PATH_MODULES=$(readlink -f $J_PATH"/../../")
 
 J_PARAMS="$@"
 
@@ -23,7 +27,7 @@ function Joiner:add_repo() {
     branch=$3
     basedir=$4
 
-    path=$J_PATH_MODULES/$basedir/$name
+    path="$J_PATH_MODULES/$basedir/$name"
 
     if [ -e $path/.git/ ]; then
         # if exists , update
@@ -42,7 +46,7 @@ function Joiner:add_git_submodule() {
     branch=$3
     basedir=$4
 
-    path=$J_PATH_MODULES/$basedir/$name
+    path="$J_PATH_MODULES/$basedir/$name"
     cur_git_path=$(git rev-parse --show-toplevel)"/"
     rel_path=${path#$cur_git_path}
 
@@ -64,10 +68,10 @@ function Joiner:add_file() {
 }
 
 function Joiner:with_dev() {
-    if [ "${J_OPT[dev]}" = true ]
-        return 1;
+    if [ "${J_OPT[dev]}" = true ]; then
+        return $TRUE;
     else
-        return 0;
+        return $FALSE;
     fi
 }
 
