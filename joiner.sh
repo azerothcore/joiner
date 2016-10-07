@@ -14,7 +14,7 @@ FALSE=1
 
 J_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-source "$J_PATH/gnu-tools-for-mac.sh"
+source "$J_PATH/lib/gnu-tools-for-mac.sh"
 
 J_PATH_MODULES=$(readlink -f $J_PATH"/../../")
 
