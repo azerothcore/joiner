@@ -14,9 +14,12 @@ FALSE=1
 
 J_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-source "$J_PATH/lib/gnu-tools-for-mac.sh"
-
-J_PATH_MODULES=$(readlink -f $J_PATH"/../../")
+unamestr=`uname`
+if [[ "$unamestr" == 'Darwin' ]]; then
+   J_PATH_MODULES=$(greadlink -f "$J_PATH/../../")
+else
+   J_PATH_MODULES=$(readlink -f "$J_PATH/../../")
+fi
 
 J_PARAMS="$@"
 
