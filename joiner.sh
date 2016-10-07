@@ -85,7 +85,7 @@ function Joiner:with_dev() {
 # Parsing parameters
 #
 
-declare -a J_OPT;
+declare -A J_OPT;
 
 for i in "$@"
 do
