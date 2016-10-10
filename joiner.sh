@@ -38,7 +38,7 @@ function Joiner:add_repo() {
 
     if [ -e $path/.git/ ]; then
         # if exists , update
-        git --git-dir=$path/.git/ rev-parse && git --git-dir=$path/.git/ pull origin $branch | grep -q -v 'Already up-to-date.' && changed="yes"
+        git --git-dir=$path/.git/ rev-parse && git --git-dir=$path/.git/ pull origin $branch | grep 'Already up-to-date.' && changed="yes"
     else
         # otherwise clone
         git clone $url -c advice.detachedHead=0 -b $branch $path
