@@ -34,16 +34,18 @@ function Joiner:add_repo() {
     basedir=$4
 
     path="$J_PATH_MODULES/$basedir/$name"
+    changed="no"
 
     if [ -e $path/.git/ ]; then
         # if exists , update
-        git --git-dir=$path/.git/ rev-parse && git --git-dir=$path/.git/ pull origin $branch
+        git --git-dir=$path/.git/ rev-parse && git --git-dir=$path/.git/ pull origin $branch | grep -q -v 'Already up-to-date.' && changed="yes"
     else
         # otherwise clone
         git clone $url -c advice.detachedHead=0 -b $branch $path
+        changed="yes"
     fi
 
-    [ -f $path/install.sh ] && bash $path/install.sh $J_PARAMS
+    [[ -f $path/install.sh && "$changed" = "yes" ]] && bash $path/install.sh $J_PARAMS
 }
 
 function Joiner:add_git_submodule() {
