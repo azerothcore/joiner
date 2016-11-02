@@ -70,8 +70,29 @@ function Joiner:add_git_submodule() {
 }
 
 function Joiner:add_file() {
+    declare -A _OPT;
+    for i in "$@"
+    do
+    case $i in
+        --unzip|-u)
+            _OPT[unzip]=true
+            shift
+        ;;
+        *)
+            # unknown option
+        ;;
+    esac
+    done
+
     mkdir -p $J_PATH_MODULES/"$(dirname $2)"
-    [ ! -e $J_PATH_MODULES/$2 ] && curl -o $J_PATH_MODULES/$2 $1
+
+    destination="$J_PATH_MODULES/$2"
+
+    [ ! -e $J_PATH_MODULES/$2 ] && curl -o "$destination" "$1"
+
+    if [ "${_OPT[unzip]}" = true ]; then
+        unzip -d $(dirname $destination) $destination
+    fi
 }
 
 function Joiner:with_dev() {
@@ -92,12 +113,12 @@ for i in "$@"
 do
 case $i in
     -e=*|--extras=*)
-		J_OPT[extra]="${i#*=}"
-		shift
+        J_OPT[extra]="${i#*=}"
+        shift
     ;;
     --dev|-d)
-		J_OPT[dev]=true
-		shift
+        J_OPT[dev]=true
+        shift
     ;;
     *)
         # unknown option
