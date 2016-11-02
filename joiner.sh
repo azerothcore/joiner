@@ -92,6 +92,7 @@ function Joiner:add_file() {
 
     if [ "${_OPT[unzip]}" = true ]; then
         unzip -d $(dirname $destination) $destination
+        rm $destination
     fi
 }
 
