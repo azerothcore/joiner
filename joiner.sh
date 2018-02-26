@@ -29,7 +29,8 @@ J_PARAMS="$@"
 # JOINER FUNCTIONS
 #
 
-function Joiner:remove() {
+function Joiner:remove() (
+    set -e
     name=$1
     basedir=$2
 
@@ -43,13 +44,21 @@ function Joiner:remove() {
     fi
 
     return $TRUE
-}
+)
 
-function Joiner:upd_repo() {
+function Joiner:upd_repo() (
+    set -e
     Joiner:add_repo $@
-}
 
-function Joiner:add_repo() {
+    if [ "$?" -ne "0" ]; then
+        return $FALSE
+    fi
+
+    return $TRUE
+)
+
+function Joiner:add_repo() (
+    set -e
     url=$1
     name=$2
     branch=$3
@@ -58,18 +67,25 @@ function Joiner:add_repo() {
     path="$J_PATH_MODULES/$basedir/$name"
     changed="yes"
 
-    if [ -e $path/.git/ ]; then
+    if [ -e "$path/.git/" ]; then
         # if exists , update
-        git --git-dir=$path/.git/ rev-parse && git --git-dir=$path/.git/ pull origin $branch | grep 'Already up-to-date.' && changed="no"
+        git --git-dir="$path/.git/" rev-parse && git --git-dir="$path/.git/" pull origin $branch | grep 'Already up-to-date.' && changed="no"
     else
         # otherwise clone
         git clone $url -c advice.detachedHead=0 -b $branch $path
     fi
 
-    [[ -f $path/install.sh && "$changed" = "yes" ]] && bash $path/install.sh $J_PARAMS
-}
+    if [ "$?" -ne "0" ]; then
+        return $FALSE
+    fi
 
-function Joiner:add_git_submodule() {
+    [[ -f $path/install.sh && "$changed" = "yes" ]] && bash $path/install.sh $J_PARAMS
+
+    return $TRUE
+)
+
+function Joiner:add_git_submodule() (
+    set -e
     url=$1
     name=$2
     branch=$3
@@ -88,10 +104,17 @@ function Joiner:add_git_submodule() {
         git submodule update --init $rel_path
     fi
 
-    [ -f $path/install.sh ] && bash $path/install.sh $J_PARAMS
-}
+    if [ "$?" -ne "0" ]; then
+        return $FALSE
+    fi
 
-function Joiner:add_file() {
+    [ -f $path/install.sh ] && bash $path/install.sh $J_PARAMS
+
+    return $TRUE
+)
+
+function Joiner:add_file() (
+    set -e
     declare -A _OPT;
     for i in "$@"
     do
@@ -116,15 +139,22 @@ function Joiner:add_file() {
         unzip -d $(dirname $destination) $destination
         rm $destination
     fi
-}
 
-function Joiner:with_dev() {
+    if [ "$?" -ne "0" ]; then
+        return $FALSE
+    fi
+
+    return $TRUE
+)
+
+function Joiner:with_dev() (
+    set -e
     if [ "${J_OPT[dev]}" = true ]; then
         return $TRUE;
     else
         return $FALSE;
     fi
-}
+)
 
 #
 # Parsing parameters
