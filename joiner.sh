@@ -15,10 +15,12 @@ FALSE=1
 J_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 unamestr=`uname`
-if [[ "$unamestr" == 'Darwin' ]]; then
-   J_PATH_MODULES=$(greadlink -f "$J_PATH/../../")
-else
-   J_PATH_MODULES=$(readlink -f "$J_PATH/../../")
+if [ -z "$J_PATH_MODULES" ]; then
+    if [[ "$unamestr" == 'Darwin' ]]; then
+        J_PATH_MODULES=$(greadlink -f "$J_PATH/../../")
+    else
+        J_PATH_MODULES=$(readlink -f "$J_PATH/../../")
+    fi
 fi
 
 J_PARAMS="$@"
@@ -26,6 +28,26 @@ J_PARAMS="$@"
 #
 # JOINER FUNCTIONS
 #
+
+function Joiner:remove() {
+    name=$1
+    basedir=$2
+
+    path="$J_PATH_MODULES/$basedir/$name"
+
+    if [ -d "$path" ]; then
+        rm -rf $path
+        [[ -f $path/uninstall.sh ]] && bash $path/uninstall.sh $J_PARAMS
+    elif [ -f "$path" ]; then
+        rm -f $path
+    fi
+
+    return $TRUE
+}
+
+function Joiner:upd_repo() {
+    Joiner:add_repo $@
+}
 
 function Joiner:add_repo() {
     url=$1
@@ -107,6 +129,11 @@ function Joiner:with_dev() {
 #
 # Parsing parameters
 #
+
+if [ -e "$J_PATH/.git/" ]; then
+    # self update
+    git --git-dir="$J_PATH/".git/ rev-parse && git --git-dir="$J_PATH/.git/" fetch origin "$(git rev-parse --abbrev-ref HEAD)" --quiet
+fi
 
 declare -A J_OPT;
 
