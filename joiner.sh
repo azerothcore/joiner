@@ -37,10 +37,12 @@ function Joiner:remove() (
     path="$J_PATH_MODULES/$basedir/$name"
 
     if [ -d "$path" ]; then
-        rm -rf $path
+        rm -r --interactive=never $path
         [[ -f $path/uninstall.sh ]] && bash $path/uninstall.sh $J_PARAMS
     elif [ -f "$path" ]; then
-        rm -f $path
+        rm --interactive=never $path
+    else
+        return $FALSE
     fi
 
     return $TRUE
