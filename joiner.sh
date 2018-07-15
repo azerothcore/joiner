@@ -166,16 +166,16 @@ if [ -e "$J_PATH/.git/" ]; then
     # self update
     if [ ! -z "$J_VER_REQ" ]; then
         # if J_VER_REQ is defined then update only if tag is different
-        _cur_branch=`git rev-parse --abbrev-ref HEAD`
-        _cur_ver=`git --git-dir="$J_PATH/.git/" name-rev --tags --name-only $_cur_branch`
+        _cur_branch=`git --git-dir="$J_PATH/.git/" --work-tree="$J_PATH/" rev-parse --abbrev-ref HEAD`
+        _cur_ver=`git --git-dir="$J_PATH/.git/" --work-tree="$J_PATH/" name-rev --tags --name-only $_cur_branch`
         if [ "$_cur_ver" != "$J_VER_REQ" ]; then
-            git --git-dir="$J_PATH/.git/" rev-parse && git --git-dir="$J_PATH/.git/" fetch --tags origin "$_cur_branch" --quiet
-            git --git-dir="$J_PATH/.git/" checkout "tags/$J_VER_REQ" -b "$_cur_branch"
+            git --git-dir="$J_PATH/.git/" --work-tree="$J_PATH/" rev-parse && git --git-dir="$J_PATH/.git/" fetch --tags origin "$_cur_branch" --quiet
+            git --git-dir="$J_PATH/.git/" --work-tree="$J_PATH/" checkout "tags/$J_VER_REQ" -b "$_cur_branch"
         fi
     else
         # else always try to keep at latest available version (worst performances)
 
-        git --git-dir="$J_PATH/.git/" rev-parse && git --git-dir="$J_PATH/.git/" fetch origin "$_cur_branch" --quiet
+        git --git-dir="$J_PATH/.git/" --work-tree="$J_PATH/" rev-parse && git --git-dir="$J_PATH/.git/" --work-tree="$J_PATH/" fetch origin "$_cur_branch" --quiet
     fi
 fi
 
