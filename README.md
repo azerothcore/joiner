@@ -11,6 +11,11 @@ it is compatible with:
 This script is able to install and update modules and its dependencies via git clone, submodule or files directly.
 To install dependencies you must configure your repository to support Joiner. Read instructions below.
 
+## Projects that are using Joiner
+
+- https://github.com/azerothcore/azerothcore-wotlk
+
+- https://github.com/hw-core
 
 ## features
 
