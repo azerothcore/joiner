@@ -25,6 +25,23 @@ if [ -z "$J_PATH_MODULES" ]; then
     fi
 fi
 
+for i in "$@"
+do
+case $i in
+    --parent=*) #internally used
+        J_OPT[parent]="${i#*=}"
+        shift
+    ;;
+    --child=*) #internally used
+        J_OPT[child]="${i#*=}"
+        shift
+    ;;
+    *)
+        # unknown option
+    ;;
+esac
+done
+
 J_PARAMS="$@"
 
 function Joiner:is_submodule() 
@@ -108,7 +125,9 @@ function Joiner:add_repo() (
         return $FALSE
     fi
 
-    [[ -f $path/install.sh && "$changed" = "yes" ]] && bash $path/install.sh $J_PARAMS
+    # parent/child to avoid redundancy
+    [[ -f $path/install.sh && "$changed" = "yes" 
+    && "${J_OPT[parent]}" != "$path" && "${J_OPT[child]}" != "$path" ]] && bash "$path/install.sh" --child="${J_OPT[parent]}" --parent="$path" $J_PARAMS
 
     return $TRUE
 )
@@ -156,7 +175,9 @@ function Joiner:add_git_submodule() (
         return $FALSE
     fi
 
-    [ -f $path/install.sh ] && bash $path/install.sh $J_PARAMS
+    # parent/child to avoid redundancy
+    [[ -f $path/install.sh && "$changed" = "yes" 
+    && "${J_OPT[parent]}" != "$path" && "${J_OPT[child]}" != "$path" ]] && bash "$path/install.sh" --child="${J_OPT[parent]}" --parent="$path" $J_PARAMS
 
     return $TRUE
 )
@@ -199,7 +220,9 @@ function Joiner:add_file() (
         filename=$(basename -- "$destination")
         newpath="$dir${filename%%.*}"
 
-        [ -f $newpath/install.sh ] && bash $newpath/install.sh $J_PARAMS
+        # parent/child to avoid redundancy
+        [[ -f $newpath/install.sh && "$changed" = "yes" 
+        && "${J_OPT[parent]}" != "$newpath" && "${J_OPT[child]}" != "$newpath" ]] && bash "$newpath/install.sh" --child="${J_OPT[parent]}" --parent="$newpath" $J_PARAMS
     fi
 
     if [ "$?" -ne "0" ]; then
@@ -413,6 +436,7 @@ function Joiner:menu() {
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     Joiner:menu $@
 else
+    echo "Installing: $(basename `dirname ${0}`)"
     Joiner:_checkOptions $@
 fi
 
