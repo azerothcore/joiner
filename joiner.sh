@@ -297,22 +297,7 @@ function Joiner:self_update() {
     fi
 }
 
-function Joiner:menu() {
-    PS3='[Please enter your choice]: '
-    options=(
-        "add-repo (a): download and install a module from git repository."                  # 1
-        "upd-repo (u): update a module."            # 2
-        "add-git-submodule (s): download and install module from git repository as git submodule."                   # 3
-        "add-file (f): download and install a file or zipped folder."           # 4
-        "remove (r): uninstall and remove a module."               # 5
-        "self-update (j): Update joiner version to the latest stable (master branch)"
-        "quit: Exit from this menu"
-        )
-
-    function _switch() {
-        _reply="$1"
-        shift
-
+function Joiner:_checkOptions() {
         declare -A J_OPT;
 
         for i in "$@"
@@ -333,6 +318,25 @@ function Joiner:menu() {
             ;;
         esac
         done
+}
+
+function Joiner:menu() {
+    PS3='[Please enter your choice]: '
+    options=(
+        "add-repo (a): download and install a module from git repository."                  # 1
+        "upd-repo (u): update a module."            # 2
+        "add-git-submodule (s): download and install module from git repository as git submodule."                   # 3
+        "add-file (f): download and install a file or zipped folder."           # 4
+        "remove (r): uninstall and remove a module."               # 5
+        "self-update (j): Update joiner version to the latest stable (master branch)"
+        "quit: Exit from this menu"
+        )
+
+    function _switch() {
+        _reply="$1"
+        shift
+
+        Joiner:_checkOptions
 
         _opt="$@"
 
@@ -393,5 +397,7 @@ function Joiner:menu() {
 # you must call the relative function 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     Joiner:menu $@
+else
+    Joiner:_checkOptions
 fi
 
