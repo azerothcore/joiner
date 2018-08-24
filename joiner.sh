@@ -127,6 +127,7 @@ function Joiner:add_git_submodule() (
 
     if [ -e $path/ ]; then
         # if exists , update
+        git --git-dir="$path/.git/" pull origin $branch
         git submodule update --init $rel_path
     else
         # otherwise add
