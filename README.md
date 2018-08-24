@@ -1,4 +1,4 @@
-# joiner v0.8.4
+# Joiner v0.8.4
 
 Universal crossplatform and agnostic dependency manager written in bash for any kind of module. 
 
@@ -9,7 +9,7 @@ it is compatible with:
 - Windows (via mingw, wsl or other installable bash console)
 
 This script is able to install and update modules and its dependencies via git clone, submodule or files directly.
-To install dependencies 
+To install dependencies you must configure your repository to support Joiner. Read instructions below.
 
 
 ## features
