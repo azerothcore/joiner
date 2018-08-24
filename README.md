@@ -92,6 +92,10 @@ To install also development dependencies (test and documentation modules) you've
 
   Syntax: joiner.sh remove name [basedir]
 
+- **self-update (j)**: Update joiner version to the latest stable (master branch)
+
+  Syntax: joiner.sh self-update
+
 
 
 ## Programmatically usage
@@ -130,6 +134,11 @@ Check if Joiner has been run with --extras|-e option
     Joiner:with_extras
 
     return: true|false
+
+Update joiner version to the latest stable (master branch)
+
+    Joiner:self_update
+
 
 ## How to create a Joiner module
 

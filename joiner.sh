@@ -277,23 +277,24 @@ function Joiner:with_extras() (
 #
 # Parsing parameters
 #
+function Joiner:self_update() {
+    if [ -e "$J_PATH/.git/" ]; then
+        # self update
+        if [ ! -z "$J_VER_REQ" ]; then
+            # if J_VER_REQ is defined then update only if tag is different
+            _cur_branch=`git --git-dir="$J_PATH/.git/" --work-tree="$J_PATH/" rev-parse --abbrev-ref HEAD`
+            _cur_ver=`git --git-dir="$J_PATH/.git/" --work-tree="$J_PATH/" name-rev --tags --name-only $_cur_branch`
+            if [ "$_cur_ver" != "$J_VER_REQ" ]; then
+                git --git-dir="$J_PATH/.git/" --work-tree="$J_PATH/" rev-parse && git --git-dir="$J_PATH/.git/" fetch --tags origin "$_cur_branch" --quiet
+                git --git-dir="$J_PATH/.git/" --work-tree="$J_PATH/" checkout "tags/$J_VER_REQ" -b "$_cur_branch"
+            fi
+        else
+            # else always try to keep at latest available version (worst performances)
 
-if [ -e "$J_PATH/.git/" ]; then
-    # self update
-    if [ ! -z "$J_VER_REQ" ]; then
-        # if J_VER_REQ is defined then update only if tag is different
-        _cur_branch=`git --git-dir="$J_PATH/.git/" --work-tree="$J_PATH/" rev-parse --abbrev-ref HEAD`
-        _cur_ver=`git --git-dir="$J_PATH/.git/" --work-tree="$J_PATH/" name-rev --tags --name-only $_cur_branch`
-        if [ "$_cur_ver" != "$J_VER_REQ" ]; then
-            git --git-dir="$J_PATH/.git/" --work-tree="$J_PATH/" rev-parse && git --git-dir="$J_PATH/.git/" fetch --tags origin "$_cur_branch" --quiet
-            git --git-dir="$J_PATH/.git/" --work-tree="$J_PATH/" checkout "tags/$J_VER_REQ" -b "$_cur_branch"
+            git --git-dir="$J_PATH/.git/" --work-tree="$J_PATH/" rev-parse && git --git-dir="$J_PATH/.git/" --work-tree="$J_PATH/" fetch origin "$_cur_branch" --quiet
         fi
-    else
-        # else always try to keep at latest available version (worst performances)
-
-        git --git-dir="$J_PATH/.git/" --work-tree="$J_PATH/" rev-parse && git --git-dir="$J_PATH/.git/" --work-tree="$J_PATH/" fetch origin "$_cur_branch" --quiet
     fi
-fi
+}
 
 function Joiner:menu() {
     PS3='[Please enter your choice]: '
@@ -303,7 +304,8 @@ function Joiner:menu() {
         "add-git-submodule (s): download and install module from git repository as git submodule."                   # 3
         "add-file (f): download and install a file or zipped folder."           # 4
         "remove (r): uninstall and remove a module."               # 5
-        "quit: Exit from this menu"                     # 14
+        "self-update (j): Update joiner version to the latest stable (master branch)"
+        "quit: Exit from this menu"
         )
 
     function _switch() {
@@ -349,7 +351,10 @@ function Joiner:menu() {
             ""|"r"|"remove"|"5")
                 Joiner:remove $_opt
                 ;;
-            ""|"quit"|"14")
+            ""|"j"|"self-update"|"6")
+                Joiner:self_update
+                ;;
+            ""|"quit"|"7")
                 echo "Goodbye!"
                 exit
                 ;;
