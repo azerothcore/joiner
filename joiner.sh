@@ -9,6 +9,8 @@
 #
 
 # boolean bash convention ( inverse )
+declare -A J_OPT;
+
 TRUE=0
 FALSE=1
 
@@ -298,8 +300,6 @@ function Joiner:self_update() {
 }
 
 function Joiner:_checkOptions() {
-        declare -A J_OPT;
-
         for i in "$@"
         do
         case $i in
@@ -398,6 +398,6 @@ function Joiner:menu() {
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     Joiner:menu $@
 else
-    Joiner:_checkOptions
+    Joiner:_checkOptions $@
 fi
 
