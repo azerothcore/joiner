@@ -51,6 +51,20 @@ function Joiner:_help() {
     fi
 }
 
+function Joiner:_searchFirstValiPath() {
+    path=$1
+    until $(cd -- "$path")
+    do    
+        case   $path  in(*[!/]/*)
+            path="${path%/*}"
+        ;;    
+        (*)   
+            ! break
+    esac
+    done  2>/dev/null
+    echo $path
+}
+
 #
 # JOINER FUNCTIONS
 #
@@ -124,17 +138,18 @@ function Joiner:add_git_submodule() (
     fi
 
     path="$J_PATH_MODULES/$basedir/$name"
-    cur_git_path=$(git rev-parse --show-toplevel)"/"
-    rel_path=${path#$cur_git_path}
+    valid_path=`Joiner:_searchFirstValiPath "$path"`
+    rel_path=${path#$valid_path}
+    rel_path=${rel_path#/}
 
     if [ -e $path/ ]; then
         # if exists , update
-        git --git-dir="$path/.git/" pull origin $branch
-        git submodule update --init $rel_path
+        (cd "$path" && git pull origin $branch)
+        (cd "$valid_path" && git submodule update -f --init $rel_path)
     else
         # otherwise add
-        git submodule add -b $branch $url $rel_path
-        git submodule update --init $rel_path
+        (cd "$valid_path" && git submodule add -f -b $branch $url $rel_path)
+        (cd "$valid_path" && git submodule update -f --init $rel_path)
     fi
 
     if [ "$?" -ne "0" ]; then
