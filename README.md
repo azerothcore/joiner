@@ -63,6 +63,14 @@ This command will install js-lib-class modules and its dependencies
 To install also development dependencies (test and documentation modules) you've to run:
 
     joiner add-repo --dev https://github.com/HW-Core/js-lib-class
+    
+## Options
+
+-d|--dev: install development dependencies (see Joiner:with_dev)
+
+-e|--extras: install extras dependencies (see Joiner:with_extras)
+
+-z|--unzip: if adding a compressed file, this option will unzip it
 
 ## Command line
 
