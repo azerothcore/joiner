@@ -43,9 +43,9 @@ git clone https://github.com/drassil/joiner.git drassil/joiner
 if you want to include in your scripts you can use this code that will also automatically download the joiner if you don't have it yet and will keep it updated at each run (internally handled by joiner script):
 
 ```
-PATH_MODULES="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../"
-[ ! -d $PATH_MODULES/drassil/joiner ] && git clone https://github.com/drassil/joiner $PATH_MODULES/drassil/joiner -b master
-source "$PATH_MODULES/drassil/joiner/joiner.sh"
+J_PATH_MODULES="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/modules"
+[ ! -d $J_PATH_MODULES/drassil/joiner ] && git clone https://github.com/drassil/joiner $J_PATH_MODULES/drassil/joiner -b master
+source "$J_PATH_MODULES/drassil/joiner/joiner.sh"
 ```
 
 ## Usage
@@ -150,9 +150,9 @@ You just have to create following files in the root directory of your project:
 ```
 #!/usr/bin/env bash
 
-PATH_MODULES="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../"
-[ ! -d $PATH_MODULES/drassil/joiner ] && git clone https://github.com/drassil/joiner $PATH_MODULES/drassil/joiner -b master
-source "$PATH_MODULES/drassil/joiner/joiner.sh"
+J_PATH_MODULES="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/modules"
+[ ! -d $J_PATH_MODULES/drassil/joiner ] && git clone https://github.com/drassil/joiner $J_PATH_MODULES/drassil/joiner -b master
+source "$J_PATH_MODULES/drassil/joiner/joiner.sh"
 
 ## You can do any kind of pre-install task here
 
@@ -174,9 +174,9 @@ fi
 ```
 #!/usr/bin/env bash
 
-PATH_MODULES="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../"
-[ ! -d $PATH_MODULES/drassil/joiner ] && git clone https://github.com/drassil/joiner $PATH_MODULES/drassil/joiner -b master
-source "$PATH_MODULES/drassil/joiner/joiner.sh"
+J_PATH_MODULES="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/modules"
+[ ! -d $J_PATH_MODULES/drassil/joiner ] && git clone https://github.com/drassil/joiner $J_PATH_MODULES/drassil/joiner -b master
+source "$J_PATH_MODULES/drassil/joiner/joiner.sh"
 
 #
 # REMOVE DEPENDENCIES
